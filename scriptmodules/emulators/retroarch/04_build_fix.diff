@@ -1,0 +1,28 @@
+diff --git a/Makefile b/Makefile
+index 23571170c7..5ac42f6230 100644
+--- a/Makefile
++++ b/Makefile
+@@ -118,7 +118,8 @@ ifneq ($(CXX_BUILD), 1)
+    CFLAGS += -D_GNU_SOURCE
+ endif
+ 
+-DEF_FLAGS += $(INCLUDE_DIRS) -I. -Ideps -Ideps/stb
++# local includes must go first
++DEF_FLAGS := $(INCLUDE_DIRS) -I. -Ideps -Ideps/stb $(DEF_FLAGS)
+ 
+ CFLAGS += $(DEF_FLAGS)
+ CXXFLAGS += $(DEF_FLAGS) -D__STDC_CONSTANT_MACROS
+diff --git a/Makefile.common b/Makefile.common
+index bd550e27f7..675fb18c21 100644
+--- a/Makefile.common
++++ b/Makefile.common
+@@ -107,7 +107,8 @@ ifeq ($(HAVE_SHADERPIPELINE), 1)
+    DEFINES += -DHAVE_SHADERPIPELINE
+ endif
+ 
+-INCLUDE_DIRS += -I$(LIBRETRO_COMM_DIR)/include -I$(DEPS_DIR)
++# local includes must go first
++INCLUDE_DIRS := -I$(LIBRETRO_COMM_DIR)/include -I$(DEPS_DIR) $(INCLUDE_DIRS)
+ 
+ # Switches
+ #

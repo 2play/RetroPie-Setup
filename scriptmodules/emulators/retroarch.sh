@@ -12,7 +12,7 @@
 rp_module_id="retroarch"
 rp_module_desc="RetroArch - frontend to the libretro emulator cores - required by all lr-* emulators"
 rp_module_licence="GPL3 https://raw.githubusercontent.com/libretro/RetroArch/master/COPYING"
-rp_module_repo="git https://github.com/libretro/RetroArch.git v1.8.8"
+rp_module_repo="git https://github.com/libretro/RetroArch.git v1.9.1"
 rp_module_section="core"
 
 function depends_retroarch() {
@@ -41,12 +41,10 @@ function depends_retroarch() {
 
 function sources_retroarch() {
     gitPullOrClone
-    applyPatch "$md_data/01_hotkey_hack.diff"
-    applyPatch "$md_data/02_disable_search.diff"
-    applyPatch "$md_data/03_shader_path_config_enable.diff"
-    # revert of https://github.com/libretro/RetroArch/pull/10524/commits/9eb84728
-    # see https://github.com/RetroPie/RetroPie-Setup/issues/3249
-    applyPatch "$md_data/04_config_save_fix.diff"
+    applyPatch "$md_data/01_disable_search.diff"
+    applyPatch "$md_data/02_shader_path_config_enable.diff"
+    applyPatch "$md_data/03_revert_default_save_paths.diff"
+    applyPatch "$md_data/04_build_fix.diff"
 }
 
 function build_retroarch() {
@@ -59,7 +57,7 @@ function build_retroarch() {
         params+=(--disable-ffmpeg)
     fi
     isPlatform "gles" && params+=(--enable-opengles)
-    isPlatform "gles3" && params+=(--enable-opengles3)
+    isPlatform "gles3" && params+=(--enable-opengles3_1 --disable-opengles3_2)
     isPlatform "rpi" && isPlatform "mesa" && params+=(--disable-videocore)
     # Temporarily block dispmanx support for fkms until upstream support is fixed
     isPlatform "dispmanx" && ! isPlatform "kms" && params+=(--enable-dispmanx --disable-opengl1)
@@ -68,7 +66,11 @@ function build_retroarch() {
     isPlatform "arm" && params+=(--enable-floathard)
     isPlatform "neon" && params+=(--enable-neon)
     isPlatform "x11" && params+=(--enable-vulkan)
-    ! isPlatform "x11" && params+=(--disable-vulkan --disable-wayland)
+    if ! isPlatform "x11"; then
+        isPlatform "rpi4" && params+=(--enable-vulkan --disable-wayland)
+    else
+        params+=(--disable-vulkan --disable-wayland)
+    fi
     isPlatform "vero4k" && params+=(--enable-mali_fbdev --with-opengles_libs='-L/opt/vero3/lib')
     ./configure --prefix="$md_inst" "${params[@]}"
     make clean
@@ -163,6 +165,7 @@ function configure_retroarch() {
     iniSet "video_aspect_ratio_auto" "true"
     iniSet "rgui_show_start_screen" "false"
     iniSet "rgui_browser_directory" "$romdir"
+    iniSet "rgui_switch_icons" "false"
 
     if ! isPlatform "x86"; then
         iniSet "video_threaded" "true"

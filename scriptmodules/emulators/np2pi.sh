@@ -32,6 +32,7 @@ function build_np2pi() {
     else
     make -j 1 -f makefile.rpi
     md_ret_require="$md_build/bin/np2"
+	fi
 }
 
 function install_np2pi() {

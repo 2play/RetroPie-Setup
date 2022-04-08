@@ -70,7 +70,9 @@ function build_ffmpeg_ppsspp() {
         arch="aarch64"
     fi
     isPlatform "vero4k" && local extra_params='--arch=arm'
-
+    #isPlatform "rockpro64" && local extra_params='--build=unknown-unknown-linux'
+    isPlatform "aarch64" && params+=(--build=arm)
+	
     local MODULES
     local VIDEO_DECODERS
     local AUDIO_DECODERS
@@ -141,6 +143,10 @@ function build_ppsspp() {
         params+=(-DCMAKE_CXX_FLAGS="${CXXFLAGS/-DGL_GLEXT_PROTOTYPES/}")
     elif isPlatform "tinker"; then
         params+=(-DCMAKE_TOOLCHAIN_FILE="$md_data/tinker.armv7.cmake")
+    #elif isPlatform "rockpro64"; then
+        #params+=(-DCMAKE_TOOLCHAIN_FILE="$md_data/rockpro64.armv7.cmake")
+    #elif isPlatform "rockpro64"; then
+        #params+=(-DCMAKE_TOOLCHAIN_FILE="$md_data/rockpro64.armv8.cmake")
     elif isPlatform "vero4k"; then
         params+=(-DCMAKE_TOOLCHAIN_FILE="cmake/Toolchains/vero4k.armv8.cmake")
     fi

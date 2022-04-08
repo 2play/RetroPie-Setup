@@ -397,7 +397,7 @@ function get_platform() {
                 __platform="armv7-mali"
                 ;;
             *)
-                # jetsons can be identified by device tree or soc0/family (depending on the L4T version used)
+                # jetsons/rockpro64 can be identified by device tree or soc0/family (depending on the L4T version used)
                 # refer to the nv.sh script in the L4T DTS for a similar implementation
                 if [[ -e "/proc/device-tree/compatible" ]]; then
                     case "$(tr -d '\0' < /proc/device-tree/compatible)" in
@@ -409,6 +409,9 @@ function get_platform() {
                             ;;
                         *tegra194*)
                             __platform="xavier"
+                            ;;
+						*rk3399*)
+                            __platform="rockpro64"
                             ;;
                     esac
                 elif [[ -e "/sys/devices/soc0/family" ]]; then
@@ -523,6 +526,16 @@ function platform_rpi3() {
 function platform_rpi4() {
     cpu_armv8 "cortex-a72"
     __platform_flags+=(rpi gles gles3 gles31)
+}
+
+function platform_rockpro64() {
+    if [[ "$(getconf LONG_BIT)" -eq 32 ]]; then
+        __default_cflags="-march=armv8-a+crc -mtune=cortex-a72 -mfpu=neon-fp-armv8"
+        __platform_flags="arm armv8 neon kms gles gles3 gles31 gles32"
+    else
+        __default_cflags="-march=native"
+        __platform_flags="aarch64 kms gles gles3 gles31 gles32"
+    fi
 }
 
 function platform_odroid-c1() {

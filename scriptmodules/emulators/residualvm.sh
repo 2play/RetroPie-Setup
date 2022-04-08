@@ -33,6 +33,7 @@ function sources_residualvm() {
 }
 
 function build_residualvm() {
+    if isPlatform "rockpro64"; then 
     local params=(
         --enable-opengl-shaders
         --enable-vkeybd
@@ -40,6 +41,16 @@ function build_residualvm() {
         --disable-debug
         --prefix="$md_inst"
     )
+	else
+       local params=(
+            --enable-opengl-shaders
+            --enable-vkeybd
+            --enable-release
+            --disable-debug
+            #--enable-keymapper
+            --prefix="$md_inst"
+        )
+	fi	
     if isPlatform "gles"; then
         params+=(--force-opengles2)
         # wintermute fails to build on rpi/opegles - disable for now

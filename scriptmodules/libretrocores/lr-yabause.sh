@@ -25,6 +25,7 @@ function build_lr-yabause() {
     local params=()
     cd yabause/src/libretro
     isPlatform "neon" && params+=(platform=armvneonhardfloat)
+    isPlatform "rockpro64" && params+=(platform=RK3399 HAVE_LTCG=0 ARCH=arm -j4)
     ! isPlatform "x86" && params+=(HAVE_SSE=0)
     make "${params[@]}" clean
     make "${params[@]}"

@@ -15,6 +15,7 @@ rp_module_help="ROM Extensions: .d88 .d98 .88d .98d .fdi .xdf .hdm .dup .2hd .tf
 rp_module_repo="git https://github.com/eagle0wl/np2pi.git master"
 rp_module_section="exp"
 rp_module_flags="sdl1 !all rpi !aarch64"
+#rp_module_flags="sdl1 !all rpi aarch64"
 
 function depends_np2pi() {
     getDepends libsdl1.2-dev libasound2-dev libsdl-ttf2.0-dev fonts-takao-gothic
@@ -26,6 +27,9 @@ function sources_np2pi() {
 
 function build_np2pi() {
     cd sdl
+	if isPlatform "rockpro64"; then
+        make -j4 PLATFORM=RK3399 -f makefile.rpi
+    else
     make -j 1 -f makefile.rpi
     md_ret_require="$md_build/bin/np2"
 }

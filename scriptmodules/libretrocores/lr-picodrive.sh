@@ -32,6 +32,7 @@ function build_lr-picodrive() {
     elif isPlatform "aarch64"; then
         params+=(use_sh2drc=0)
     fi
+	isPlatform "rockpro64" && params+=(platform=arm64 -j4 DEBUG=1)
     make clean
     make -f Makefile.libretro "${params[@]}"
     md_ret_require="$md_build/picodrive_libretro.so"

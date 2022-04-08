@@ -22,6 +22,7 @@ function depends_mupen64plus() {
     isPlatform "rpi" && depends+=(libraspberrypi-bin libraspberrypi-dev)
     isPlatform "mesa" && depends+=(libgles2-mesa-dev)
     isPlatform "gl" && depends+=(libglew-dev libglu1-mesa-dev)
+    isPlatform "rockpro64" 
     isPlatform "x86" && depends+=(nasm)
     isPlatform "vero4k" && depends+=(vero3-userland-dev-osmc)
     # was a vero4k only line - I think it's not needed or can use a smaller subset of boost

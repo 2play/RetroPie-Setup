@@ -46,4 +46,5 @@ function install_bin_golang() {
         #downloadAndExtract "https://go.dev/dl/go1.18.linux-arm64.tar.gz" "$md_inst" --strip-components 1 
     else
 		downloadAndExtract "https://storage.googleapis.com/golang/go1.8.7.linux-$arch.tar.gz" "$md_inst" --strip-components 1
+	fi
 }
